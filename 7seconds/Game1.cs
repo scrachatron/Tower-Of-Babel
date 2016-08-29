@@ -46,7 +46,7 @@ namespace _7seconds
             m_touch = new TouchInputManager();
             m_map = new Level();
             m_cam = new Camera(GraphicsDevice.Viewport);
-            m_ui = new Ui(new Vector2(graphics.PreferredBackBufferWidth / 6, graphics.PreferredBackBufferHeight - graphics.PreferredBackBufferHeight / 5));
+            m_ui = new Ui(new Vector2(graphics.PreferredBackBufferWidth / 6, graphics.PreferredBackBufferHeight - graphics.PreferredBackBufferHeight / 5),(graphics.PreferredBackBufferWidth/20));
 
             base.Initialize();
         }
@@ -87,7 +87,8 @@ namespace _7seconds
             {
                 m_map = new Level();
             }
-            
+            m_ui.UpdateMe(m_touch);
+
             m_cam.UpdateMe(new Vector2(0, 0), new Point(0, 0));
 
             base.Update(gameTime);
@@ -107,9 +108,14 @@ namespace _7seconds
             spriteBatch.Begin();
 
             m_ui.DrawMe(spriteBatch);
+#if DEBUG
+            for (int i = 0; i < m_touch.m_Touches.Count; i++)
+            {
+                spriteBatch.Draw(Pixelclass.Pixel, new Rectangle(m_touch.m_Touches[i].Position.ToPoint(), Pixelclass.Tfont.MeasureString((m_touch.m_Touches[i].Position.ToPoint() + "")).ToPoint()),Color.Blue);
+                spriteBatch.DrawString(Pixelclass.Font, m_touch.m_Touches[i].Position.ToPoint() + "", m_touch.m_Touches[i].Position, Color.RosyBrown);
+            }
+#endif
 
-            if (m_touch.m_Touches.Count > 0)
-                spriteBatch.DrawString(Pixelclass.Font, m_touch.m_Touches[0].Position.ToPoint() + "", m_touch.m_Touches[0].Position, Color.RosyBrown);
             spriteBatch.End();
 
             base.Draw(gameTime);
