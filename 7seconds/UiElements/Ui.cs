@@ -11,6 +11,7 @@ using Android.Views;
 using Android.Widget;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Tower_Of_Babel.UiElements;
 
 namespace _7seconds
 {
@@ -18,21 +19,25 @@ namespace _7seconds
     {
 
         private Vector2 m_position;
-        private bool[] m_active;
+        private List<GameButton> m_buttons;
         private int m_buttonsize;
 
 
         public Ui(Vector2 pos,int buttonsize)
         {
-            m_active = new bool[4];
+            m_buttons.Add(new GameButton("W"));
+            m_buttons.Add(new GameButton("A"));
+            m_buttons.Add(new GameButton("S"));
+            m_buttons.Add(new GameButton("D"));
+
             m_position = pos - new Vector2(buttonsize/2,buttonsize/2);
             m_buttonsize = buttonsize;
         }
 
         public void UpdateMe(TouchInputManager input)
         {
-            for (int i = 0; i < m_active.Length; i++)
-                m_active[i] = false;
+            for (int i = 0; i < m_buttons.Count; i++)
+                m_buttons[i] = false;
 
             for (int touchid = 0; touchid < input.m_Touches.Count; touchid++)
             {

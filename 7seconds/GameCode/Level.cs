@@ -34,7 +34,6 @@ namespace _7seconds
             m_mazeGen = new MazeGenerator();
             m_inf = new MazeInfo(new Point(128,96), 40, 30, 10, 20,10);
             RegenMaze(m_inf);
-
         }
         public Level(MazeInfo inf)
         {

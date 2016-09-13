@@ -18,10 +18,11 @@ namespace _7seconds
         public static int TILESIZE = 16;
 
         SpriteBatch spriteBatch;
-        Level m_map;
+        List<Level> m_map;
         Camera m_cam;
         Ui m_ui;
         TouchInputManager m_touch;
+        private Thread m_manager;
 
         public Game1()
         {
@@ -44,13 +45,20 @@ namespace _7seconds
         protected override void Initialize()
         {
             m_touch = new TouchInputManager();
-            m_map = new Level();
+            m_map = new List<Level>();
+            m_map.Add(new Level());
+            m_manager = new Thread(new ThreadStart(ThreadMap));
+            m_manager.Start();
             m_cam = new Camera(GraphicsDevice.Viewport);
             m_ui = new Ui(new Vector2(graphics.PreferredBackBufferWidth / 6, graphics.PreferredBackBufferHeight - graphics.PreferredBackBufferHeight / 5),(graphics.PreferredBackBufferWidth/20));
 
             base.Initialize();
         }
 
+        private void ThreadMap()
+        {
+            m_map.Add(new Level());
+        }
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
@@ -85,7 +93,14 @@ namespace _7seconds
             m_touch.UpdateMe();
             if(m_touch.WasTouchedBack())
             {
-                m_map = new Level();
+
+                //m_manager.
+                m_manager.Join();
+                m_map.RemoveAt(0);
+                m_manager = new Thread(new ThreadStart(ThreadMap));
+                m_manager.Start();
+
+                //m_map.Add(new Level());
             }
             m_ui.UpdateMe(m_touch);
 
@@ -100,7 +115,7 @@ namespace _7seconds
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, RasterizerState.CullNone, null, m_cam.Transform);
 
-            m_map.DrawMe(spriteBatch);
+            m_map[0].DrawMe(spriteBatch);
 
             
             spriteBatch.End();
@@ -108,6 +123,7 @@ namespace _7seconds
             spriteBatch.Begin();
 
             m_ui.DrawMe(spriteBatch);
+
 #if DEBUG
             for (int i = 0; i < m_touch.m_Touches.Count; i++)
             {

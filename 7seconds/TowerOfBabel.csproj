@@ -82,7 +82,8 @@
     <Compile Include="Modules\SaveGameManager.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Ui.cs" />
+    <Compile Include="UiElements\Button.cs" />
+    <Compile Include="UiElements\Ui.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
