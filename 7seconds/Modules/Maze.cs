@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace _7seconds
+namespace Tower_Of_Babel
 {
     class MazeGenerator
     {

@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Tower_Of_Babel.UiElements;
 
-namespace _7seconds
+namespace Tower_Of_Babel
 {
     class Ui : Pixelclass
     {

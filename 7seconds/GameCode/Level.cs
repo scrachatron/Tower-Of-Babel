@@ -6,8 +6,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Graphics;
 using System.Threading;
+using Tower_Of_Babel;
 
-namespace _7seconds
+namespace Tower_Of_Babel
 {
 
     class Level : Pixelclass

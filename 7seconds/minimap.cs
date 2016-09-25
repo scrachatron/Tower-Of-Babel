@@ -9,7 +9,6 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using _7seconds;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 

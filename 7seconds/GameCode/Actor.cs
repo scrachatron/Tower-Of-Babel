@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace _7seconds
+namespace Tower_Of_Babel
 {
     class Actor : Pixelclass
     {
@@ -65,10 +65,30 @@ namespace _7seconds
         {
             m_rect.Width = level.LayerSize.X;
             m_rect.Height = level.LayerSize.Y;
+
+            if (m_rect.X != m_virtualpos.X * level.LayerSize.X || m_rect.Y != m_virtualpos.Y * level.LayerSize.Y)
+                m_position = Vector2.Lerp(m_position, m_targetPos.ToVector2(), 0.3f);
+            if (m_rect.X == m_virtualpos.X * level.LayerSize.X)
+            {
+                m_position.X = m_virtualpos.X * level.LayerSize.X;
+            }
+            if (m_rect.Y == m_virtualpos.Y * level.LayerSize.Y)
+            {
+                m_position.Y = m_virtualpos.Y * level.LayerSize.Y;
+            }
+
+            //if (new Point(m_rect.X,m_rect.Y) != new Point(m_virtualpos.X * level.LayerSize.X,m_virtualpos.Y * level.LayerSize.Y))
+            //    m_position = Vector2.Lerp(m_position, m_targetPos.ToVector2(), 0.3f);
+            //else
+            //{
+            //    m_position = new Vector2(m_virtualpos.X * level.LayerSize.X, m_virtualpos.Y * level.LayerSize.Y);
+            //}
+
             m_rect.X = (int)Math.Round(m_position.X);
             m_rect.Y = (int)Math.Round(m_position.Y);
 
-            m_position = Vector2.Lerp(m_position, m_targetPos.ToVector2(), 0.3f);
+
+            
 
             if (m_timer.X < 0)
             {
@@ -138,7 +158,9 @@ namespace _7seconds
         public override void DrawMe(SpriteBatch sb)
         {
             base.DrawMe(sb);
+#if DEBUG
             sb.DrawString(Font, VirtualPosition.X + "," + VirtualPosition.Y, Position, Color.White);
+#endif
         }
     }
 }

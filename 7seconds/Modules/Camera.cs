@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace _7seconds
+namespace Tower_Of_Babel
 {
     class Camera
     {

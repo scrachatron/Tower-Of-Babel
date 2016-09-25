@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using System.Xml.Serialization;
 using System.IO;
 
-namespace _7seconds
+namespace Tower_Of_Babel
 {
     [Serializable]
     public struct LevelData

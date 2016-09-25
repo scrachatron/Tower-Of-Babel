@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace _7seconds
+namespace Tower_Of_Babel
 {
     class InputManager
     {

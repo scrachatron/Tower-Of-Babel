@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
 
-namespace _7seconds
+namespace Tower_Of_Babel
 {
     static class Savegame
     {

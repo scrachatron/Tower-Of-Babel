@@ -9,7 +9,6 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using _7seconds;
 
 namespace Tower_Of_Babel.UiElements
 {
