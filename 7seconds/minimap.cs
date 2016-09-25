@@ -19,10 +19,11 @@ namespace Tower_Of_Babel
     {
 
         bool[,] m_visibleterrain;
+        int mapsize = 16;
         //Level m_lvl;
-        public minimap()
+        public minimap(int mapwidth)
         {
-           
+            mapsize = Game1.graphics.PreferredBackBufferWidth / 128;
         }
         public void UpdateMap(Level lvl)
         {
@@ -62,14 +63,14 @@ namespace Tower_Of_Babel
                     if (m_visibleterrain[x,y] == true)
                     {
                         if (lvl.Map[x,y] == 0)
-                            sb.Draw(Pixel, new Rectangle(x * 16, y * 16, 16, 16), Color.White * 0.75f);
+                            sb.Draw(Pixel, new Rectangle(x * mapsize, y * mapsize, mapsize, mapsize), Color.White * 0.75f);
 
                     }
 
 #if DEBUG
-            sb.Draw(Pixel, new Rectangle(p.X * 16, p.Y * 16, 16, 16), Color.Blue * 0.75f);
-            sb.Draw(Pixel, new Rectangle(lvl.m_StartPos.X * 16, lvl.m_StartPos.Y * 16, 16, 16), Color.Red * 0.75f);
-            sb.Draw(Pixel, new Rectangle(lvl.m_WinPos.X * 16, lvl.m_WinPos.Y * 16, 16, 16), Color.Green * 0.75f);
+            sb.Draw(Pixel, new Rectangle(p.X * mapsize, p.Y * mapsize, mapsize, mapsize), Color.Blue * 0.75f);
+            sb.Draw(Pixel, new Rectangle(lvl.m_StartPos.X * mapsize, lvl.m_StartPos.Y * mapsize, mapsize, mapsize), Color.Red * 0.75f);
+            sb.Draw(Pixel, new Rectangle(lvl.m_WinPos.X * mapsize, lvl.m_WinPos.Y * mapsize, mapsize, mapsize), Color.Green * 0.75f);
 #endif
         }
 

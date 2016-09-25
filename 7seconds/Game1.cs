@@ -54,7 +54,7 @@ namespace _7seconds
             m_manager = new Thread(new ThreadStart(ThreadMap));
             m_manager.Start();
             m_cam = new Camera(GraphicsDevice.Viewport);
-            m_minimap = new minimap();
+            m_minimap = new minimap(m_map[0].Map.GetLength(0)*TILESIZE);
             m_ui = new Ui(new Vector2(graphics.PreferredBackBufferWidth / 6, graphics.PreferredBackBufferHeight - graphics.PreferredBackBufferHeight / 5),(graphics.PreferredBackBufferWidth/20));
             m_p.Position = new Vector2(m_map[0].m_StartPos.X * TILESIZE, m_map[0].m_StartPos.Y * TILESIZE);
             m_p.VirtualPosition = m_map[0].m_StartPos;
