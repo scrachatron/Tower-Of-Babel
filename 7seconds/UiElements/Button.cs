@@ -15,7 +15,7 @@ namespace Tower_Of_Babel.UiElements
 {
     class GameButton : Pixelclass 
     {
-        private bool m_isDown = false;
+        public bool m_isDown = false;
         private string m_name;
 
         public GameButton(string name)

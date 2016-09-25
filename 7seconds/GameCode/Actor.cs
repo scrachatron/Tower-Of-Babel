@@ -52,6 +52,7 @@ namespace _7seconds
         private Point m_virtualpos;
 
         protected Point MoveHere = new Point(0, 0);
+        protected Vector2 m_timer = new Vector2(0.1f, 0.1f);
 
         public Actor(Rectangle rect, Color tint, int layer)
         {
@@ -67,10 +68,15 @@ namespace _7seconds
             m_rect.X = (int)Math.Round(m_position.X);
             m_rect.Y = (int)Math.Round(m_position.Y);
 
-
             m_position = Vector2.Lerp(m_position, m_targetPos.ToVector2(), 0.3f);
 
-            Collision(level);
+            if (m_timer.X < 0)
+            {
+                Collision(level);
+                m_timer.X = m_timer.Y;
+            }
+            m_timer.X -= (float)gt.ElapsedGameTime.TotalSeconds;
+            
         }
         public virtual void DrawMe(SpriteBatch sb)
         {
@@ -105,20 +111,24 @@ namespace _7seconds
     {
 
         public Player()
-            :base(new Rectangle(0,0,32,32),Color.Red, 0)
+            :base(new Rectangle(0,0,Game1.TILESIZE,Game1.TILESIZE),Color.Red, 0)
         {
 
         }
-        public void UpdateMe(GameTime gt, Level level, InputManager input)
+        public void UpdateMe(GameTime gt, Level level, Ui input, TouchInputManager touchinput)
         {
-            if (input.WasPressedFront(Keys.Left) || input.HeldFor(Keys.Left, 0.7f, gt))
-                MoveHere.X += -1;
-            if (input.WasPressedFront(Keys.Right) || input.HeldFor(Keys.Right, 0.7f, gt))
+            if (input.m_buttons[2].m_isDown)
                 MoveHere.X += 1;
-            if (input.WasPressedFront(Keys.Up) || input.HeldFor(Keys.Up, 0.7f, gt))
-                MoveHere.Y += -1;
-            if (input.WasPressedFront(Keys.Down) || input.HeldFor(Keys.Down, 0.7f, gt))
+            if (input.m_buttons[3].m_isDown)
+                MoveHere.X += -1;
+            if (input.m_buttons[0].m_isDown)
                 MoveHere.Y += 1;
+            if (input.m_buttons[1].m_isDown)
+                MoveHere.Y += -1;
+
+            if (touchinput.m_Touches.Count > 1)
+                m_timer.X -= (float)gt.ElapsedGameTime.TotalSeconds;
+
 
             base.UpdateMe(gt, level);
 

@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Tower_Of_Babel;
 
 namespace _7seconds
 {
@@ -15,7 +16,7 @@ namespace _7seconds
     {
         public static GraphicsDeviceManager graphics;
         public static Random RNG;
-        public static int TILESIZE = 16;
+        public static int TILESIZE = 64;
 
         SpriteBatch spriteBatch;
         List<Level> m_map;
@@ -23,17 +24,20 @@ namespace _7seconds
         Ui m_ui;
         TouchInputManager m_touch;
         private Thread m_manager;
+        Player m_p;
+        minimap m_minimap;
 
         public Game1()
         {
             RNG = new Random();
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
+            m_p = new Player();
             graphics.IsFullScreen = true;
            // graphics.PreferredBackBufferWidth = 1920;
            // graphics.PreferredBackBufferHeight = 1080;
             graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
+            
         }
 
         /// <summary>
@@ -50,7 +54,11 @@ namespace _7seconds
             m_manager = new Thread(new ThreadStart(ThreadMap));
             m_manager.Start();
             m_cam = new Camera(GraphicsDevice.Viewport);
+            m_minimap = new minimap();
             m_ui = new Ui(new Vector2(graphics.PreferredBackBufferWidth / 6, graphics.PreferredBackBufferHeight - graphics.PreferredBackBufferHeight / 5),(graphics.PreferredBackBufferWidth/20));
+            m_p.Position = new Vector2(m_map[0].m_StartPos.X * TILESIZE, m_map[0].m_StartPos.Y * TILESIZE);
+            m_p.VirtualPosition = m_map[0].m_StartPos;
+            m_minimap.UpdateMap(m_map[0]);
 
             base.Initialize();
         }
@@ -80,7 +88,7 @@ namespace _7seconds
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+
         }
 
         /// <summary>
@@ -91,20 +99,28 @@ namespace _7seconds
         protected override void Update(GameTime gameTime)
         { 
             m_touch.UpdateMe();
-            if(m_touch.WasTouchedBack())
+            if(new Rectangle(m_p.Position.ToPoint(),new Point (TILESIZE,TILESIZE)).Intersects(
+                new Rectangle(m_map[0].m_WinPos.X * TILESIZE,m_map[0].m_WinPos.Y * TILESIZE,TILESIZE,TILESIZE)))
             {
-
+            
                 //m_manager.
                 m_manager.Join();
                 m_map.RemoveAt(0);
                 m_manager = new Thread(new ThreadStart(ThreadMap));
                 m_manager.Start();
-
+                m_p.Position = new Vector2(m_map[0].m_StartPos.X * TILESIZE, m_map[0].m_StartPos.Y * TILESIZE);
+                m_p.VirtualPosition = m_map[0].m_StartPos;
+                m_minimap.UpdateMap(m_map[0]);
                 //m_map.Add(new Level());
             }
-            m_ui.UpdateMe(m_touch);
+            m_minimap.UpdateMe(gameTime, m_p,m_map[0]);
 
-            m_cam.UpdateMe(new Vector2(0, 0), new Point(0, 0));
+            m_ui.UpdateMe(m_touch);
+            m_p.UpdateMe(gameTime,m_map[0], m_ui,m_touch);
+
+                m_cam.UpdateMe(m_p.Position, new Point(TILESIZE * m_map[0].Map.GetLength(0), TILESIZE * m_map[0].Map.GetLength(1)));
+                //m_cam.UpdateMe(m_touch.m_Touches[0].Position, new Point(0, 0));
+
 
             base.Update(gameTime);
         }
@@ -116,15 +132,23 @@ namespace _7seconds
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, RasterizerState.CullNone, null, m_cam.Transform);
 
             m_map[0].DrawMe(spriteBatch);
+            spriteBatch.Draw(Pixelclass.Pixel, new Rectangle(m_p.Position.ToPoint(), new Point(TILESIZE, TILESIZE)), Color.CornflowerBlue);
 
-            
             spriteBatch.End();
 
             spriteBatch.Begin();
 
             m_ui.DrawMe(spriteBatch);
+            if (m_touch.m_Touches.Count > 2)
+                m_minimap.DrawMe(spriteBatch, m_map[0],m_p.VirtualPosition);
 
+
+            
+
+            
 #if DEBUG
+            spriteBatch.DrawString(Pixelclass.Font, m_p.Position.ToString(), new Vector2(0, 0), Color.CornflowerBlue);
+
             for (int i = 0; i < m_touch.m_Touches.Count; i++)
             {
                 spriteBatch.Draw(Pixelclass.Pixel, new Rectangle(m_touch.m_Touches[i].Position.ToPoint(), Pixelclass.Tfont.MeasureString((m_touch.m_Touches[i].Position.ToPoint() + "")).ToPoint()),Color.Blue);
