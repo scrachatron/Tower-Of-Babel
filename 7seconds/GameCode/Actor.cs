@@ -96,7 +96,11 @@ namespace Tower_Of_Babel
                 m_timer.X = m_timer.Y;
             }
             m_timer.X -= (float)gt.ElapsedGameTime.TotalSeconds;
-            
+
+            MoveHere.X = 0;
+            MoveHere.Y = 0;
+
+
         }
         public virtual void DrawMe(SpriteBatch sb)
         {
@@ -152,8 +156,8 @@ namespace Tower_Of_Babel
 
             base.UpdateMe(gt, level);
 
-            MoveHere.X = 0;
-            MoveHere.Y = 0;
+           // MoveHere.X = 0;
+           // MoveHere.Y = 0;
         }
         public override void DrawMe(SpriteBatch sb)
         {
@@ -162,5 +166,54 @@ namespace Tower_Of_Babel
             sb.DrawString(Font, VirtualPosition.X + "," + VirtualPosition.Y, Position, Color.White);
 #endif
         }
+    }
+
+    class Enemy : Actor
+    {
+
+
+
+        public Enemy(Level level,Player p) 
+            : base(new Rectangle(0, 0, Game1.TILESIZE, Game1.TILESIZE), Color.Red, 0)
+        {
+
+            Rectangle spawnroom;
+            do
+            {
+                spawnroom = level.m_mazeGen.m_rooms[Game1.RNG.Next(0, level.m_mazeGen.m_rooms.Count())];
+            } while (spawnroom.Contains(p.VirtualPosition));
+
+
+            base.VirtualPosition = spawnroom.ReturnRandom(1);
+            base.Position = new Vector2(VirtualPosition.X * Game1.TILESIZE, VirtualPosition.Y * Game1.TILESIZE);
+        }
+
+
+        public override void UpdateMe(GameTime gt, Level level)
+        {
+            base.UpdateMe(gt, level);
+        }
+
+
+        public void TakeTurn()
+        {
+            int action = Game1.RNG.Next(0, 4);
+
+            if (action == 0)
+                MoveHere.X += 1;
+            else if (action == 1)
+                MoveHere.X += -1;
+            else if (action == 2)
+                MoveHere.Y += 1;
+            else if (action == 3)
+                MoveHere.Y += -1;
+        }
+
+        public override void DrawMe(SpriteBatch sb)
+        {
+            base.DrawMe(sb);
+        }
+
+
     }
 }

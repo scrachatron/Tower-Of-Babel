@@ -17,6 +17,7 @@ namespace Tower_Of_Babel
         public static GraphicsDeviceManager graphics;
         public static Random RNG;
         public static int TILESIZE = 64;
+        public static bool PlayerTurn = true;
 
         SpriteBatch spriteBatch;
         List<Level> m_map;
@@ -114,6 +115,8 @@ namespace Tower_Of_Babel
                 //m_map.Add(new Level());
             }
             m_minimap.UpdateMe(gameTime, m_p,m_map[0]);
+            m_map[0].UpdateMe(gameTime, m_p, m_touch);
+
 
             m_ui.UpdateMe(m_touch);
             m_p.UpdateMe(gameTime,m_map[0], m_ui,m_touch);

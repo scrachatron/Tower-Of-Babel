@@ -22,6 +22,11 @@ namespace Tower_Of_Babel
         {
             get { return m_LayerSize; }
         }
+        public List<Enemy> Enemies
+        {
+            get { return m_enemys; }
+        }
+
 
         public Point m_StartPos;
         public Point m_WinPos;
@@ -29,6 +34,7 @@ namespace Tower_Of_Babel
         public MazeGenerator m_mazeGen;
         private MazeInfo m_inf;
         protected List<Point> m_chests = new List<Point>();
+        protected List<Enemy> m_enemys = new List<Enemy>();
 
         public Level()
         {
@@ -43,6 +49,21 @@ namespace Tower_Of_Babel
             RegenMaze(inf);
         }
 
+        public void UpdateMe(GameTime gt, Player p, TouchInputManager input)
+        {
+            if(input.m_Touches.Count == 2)
+            {
+                m_enemys.Add(new Enemy(this, p));
+            }
+
+            for (int i = 0; i < m_enemys.Count; i++)
+            {
+                m_enemys[i].TakeTurn();
+                m_enemys[i].UpdateMe(gt, this);
+                
+            }
+
+        }
 
         public void RegenMaze(MazeInfo inf)
         {
@@ -98,6 +119,11 @@ namespace Tower_Of_Babel
             for (int i = 0; i < m_chests.Count; i++)
             {
                 sb.Draw(Pixel, new Rectangle(m_chests[i].X * m_LayerSize.X, m_chests[i].Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Blue);
+            }
+
+            for (int i = 0; i < m_enemys.Count; i++)
+            {
+                m_enemys[i].DrawMe(sb);
             }
 
             sb.Draw(Pixel, new Rectangle(m_StartPos.X * m_LayerSize.X, m_StartPos.Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Red);
