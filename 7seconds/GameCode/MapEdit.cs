@@ -192,7 +192,7 @@ namespace Tower_Of_Babel
         }
         public void DrawMe(SpriteBatch sb)
         {
-            levelCreate.DrawMe(sb);
+            //levelCreate.DrawMe(sb);
         }
 
 

@@ -77,12 +77,15 @@ namespace Tower_Of_Babel
                 m_position.Y = m_virtualpos.Y * level.LayerSize.Y;
             }
 
+
+            #region Depreated movment code
             //if (new Point(m_rect.X,m_rect.Y) != new Point(m_virtualpos.X * level.LayerSize.X,m_virtualpos.Y * level.LayerSize.Y))
             //    m_position = Vector2.Lerp(m_position, m_targetPos.ToVector2(), 0.3f);
             //else
             //{
             //    m_position = new Vector2(m_virtualpos.X * level.LayerSize.X, m_virtualpos.Y * level.LayerSize.Y);
             //}
+            #endregion
 
             m_rect.X = (int)Math.Round(m_position.X);
             m_rect.Y = (int)Math.Round(m_position.Y);
@@ -141,6 +144,16 @@ namespace Tower_Of_Babel
         }
         public void UpdateMe(GameTime gt, Level level, Ui input, TouchInputManager touchinput)
         {
+
+            if (touchinput.m_Touches.Count > 1)
+                m_timer.X -= (float)gt.ElapsedGameTime.TotalSeconds;
+
+
+           base.UpdateMe(gt, level);
+        }
+
+        public void TakeTurn(Ui input)
+        {
             if (input.m_buttons[2].m_isDown)
                 MoveHere.X += 1;
             if (input.m_buttons[3].m_isDown)
@@ -149,16 +162,11 @@ namespace Tower_Of_Babel
                 MoveHere.Y += 1;
             if (input.m_buttons[1].m_isDown)
                 MoveHere.Y += -1;
+            if (MoveHere != Point.Zero)
+                Game1.PlayerTurn = false;
 
-            if (touchinput.m_Touches.Count > 1)
-                m_timer.X -= (float)gt.ElapsedGameTime.TotalSeconds;
-
-
-            base.UpdateMe(gt, level);
-
-           // MoveHere.X = 0;
-           // MoveHere.Y = 0;
         }
+
         public override void DrawMe(SpriteBatch sb)
         {
             base.DrawMe(sb);

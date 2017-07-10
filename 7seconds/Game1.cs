@@ -18,7 +18,9 @@ namespace Tower_Of_Babel
         public static Random RNG;
         public static int TILESIZE = 64;
         public static bool PlayerTurn = true;
+        public static int FloorNumber = 0;
 
+        
         SpriteBatch spriteBatch;
         List<Level> m_map;
         Camera m_cam;
@@ -66,7 +68,10 @@ namespace Tower_Of_Babel
 
         private void ThreadMap()
         {
-            m_map.Add(new Level());
+            if (FloorNumber % 25 == 0)
+                m_map.Add(new Town());
+            else
+                m_map.Add(new Level());
         }
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
@@ -115,13 +120,18 @@ namespace Tower_Of_Babel
                 //m_map.Add(new Level());
             }
             m_minimap.UpdateMe(gameTime, m_p,m_map[0]);
-            m_map[0].UpdateMe(gameTime, m_p, m_touch);
-
 
             m_ui.UpdateMe(m_touch);
+            if (PlayerTurn)
+            {
+                m_p.TakeTurn(m_ui);
+               
+            }
             m_p.UpdateMe(gameTime,m_map[0], m_ui,m_touch);
 
-                m_cam.UpdateMe(m_p.Position, new Point(TILESIZE * m_map[0].Map.GetLength(0), TILESIZE * m_map[0].Map.GetLength(1)));
+            m_map[0].UpdateMe(gameTime, m_p, m_touch);
+
+            m_cam.UpdateMe(m_p.Position, new Point(TILESIZE * m_map[0].Map.GetLength(0), TILESIZE * m_map[0].Map.GetLength(1)));
                 //m_cam.UpdateMe(m_touch.m_Touches[0].Position, new Point(0, 0));
 
 
@@ -130,11 +140,11 @@ namespace Tower_Of_Babel
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.AliceBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, RasterizerState.CullNone, null, m_cam.Transform);
 
-            m_map[0].DrawMe(spriteBatch);
+            m_map[0].DrawMe(spriteBatch,m_minimap,m_p.VirtualPosition);
             spriteBatch.Draw(Pixelclass.Pixel, new Rectangle(m_p.Position.ToPoint(), new Point(TILESIZE, TILESIZE)), Color.CornflowerBlue);
 
             spriteBatch.End();
