@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Graphics;
 using System.Threading;
+using Tower_Of_Babel;
 
 namespace _7seconds
 {
@@ -32,7 +33,13 @@ namespace _7seconds
         public Level()
         {
             m_mazeGen = new MazeGenerator();
-            m_inf = new MazeInfo(new Point(128,96), 40, 30, 10, 20,10);
+            m_inf = new MazeInfo(new Point(128,96), 40, 30, 7, 15, 10);
+            RegenMaze(m_inf);
+        }
+        public Level(int seed)
+        {
+            m_mazeGen = new MazeGenerator(seed);
+            m_inf = new MazeInfo(new Point(128, 96), 40, 30, 7, 15, 10);
             RegenMaze(m_inf);
         }
         public Level(MazeInfo inf)
@@ -72,10 +79,41 @@ namespace _7seconds
                         m_chests.Add(possiblechest);
                 }
 
-
-
             }
 
+        }
+
+        public void RegenTown()
+        {
+            
+        }
+        
+        public void DrawMe(SpriteBatch sb,minimap MiniMap)
+        {
+            Map = m_mazeGen.MapInformation.Map;
+            for (int x = 0; x < Map.GetLength(0); x++)
+            {
+                for (int y = 0; y < Map.GetLength(1); y++)
+                {
+                    if (Map[x, y] == 1)
+                        sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Black);
+                    //else if (Map[x, y] == 2 && MiniMap.IsVisible(new Point(x,y)))
+                    //    sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Green);
+                    //else if (Map[x, y] == 3 && MiniMap.IsVisible(new Point(x, y)))
+                    //    sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Red);
+                }
+            }
+
+            for (int i = 0; i < m_chests.Count; i++)
+            {
+                if (MiniMap.IsVisible(new Point(m_chests[i].X, m_chests[i].Y)))
+                    sb.Draw(Pixel, new Rectangle(m_chests[i].X * m_LayerSize.X, m_chests[i].Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Blue);
+            }
+
+            if (MiniMap.IsVisible(m_StartPos))
+                sb.Draw(Pixel, new Rectangle(m_StartPos.X * m_LayerSize.X, m_StartPos.Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Red);
+            else if (MiniMap.IsVisible(m_WinPos))
+                sb.Draw(Pixel, new Rectangle(m_WinPos.X * m_LayerSize.X, m_WinPos.Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Green);
         }
 
         public void DrawMe(SpriteBatch sb)
@@ -87,20 +125,20 @@ namespace _7seconds
                 {
                     if (Map[x, y] == 1)
                         sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Black);
-                    else if (Map[x, y] == 2)
-                        sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Green);
-                    else if (Map[x, y] == 3)
-                        sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Red);
+                    //else if (Map[x, y] == 2 && MiniMap.IsVisible(new Point(x,y)))
+                    //    sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Green);
+                    //else if (Map[x, y] == 3 && MiniMap.IsVisible(new Point(x, y)))
+                    //    sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Red);
                 }
             }
 
             for (int i = 0; i < m_chests.Count; i++)
             {
-                sb.Draw(Pixel, new Rectangle(m_chests[i].X * m_LayerSize.X, m_chests[i].Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Blue);
+                    sb.Draw(Pixel, new Rectangle(m_chests[i].X * m_LayerSize.X, m_chests[i].Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Blue);
             }
 
-            sb.Draw(Pixel, new Rectangle(m_StartPos.X * m_LayerSize.X, m_StartPos.Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Red);
-            sb.Draw(Pixel, new Rectangle(m_WinPos.X * m_LayerSize.X, m_WinPos.Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Green);
+                sb.Draw(Pixel, new Rectangle(m_StartPos.X * m_LayerSize.X, m_StartPos.Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Red);
+                sb.Draw(Pixel, new Rectangle(m_WinPos.X * m_LayerSize.X, m_WinPos.Y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Green);
         }
     }
 }

@@ -135,12 +135,12 @@ namespace _7seconds
                 Carve(room);
             }
         }
-        private void Carve(Point pos)
+        public void Carve(Point pos)
         {
             m_stage[pos.X, pos.Y] = 0;
             m_regions[pos.X, pos.Y] = currentregion;
         }
-        private void Carve(Rectangle rect)
+        public void Carve(Rectangle rect)
         {
             for (int x = 0; x < rect.Width; x++)
                 for (int y = 0; y < rect.Height; y++)
@@ -455,6 +455,21 @@ namespace _7seconds
             return Direction.Null;
         }
     }
+
+    class TownGenerator : MazeGenerator
+    {
+
+
+        public TownGenerator(int seed)
+            :base (seed)
+        {
+            
+        }
+
+
+    }
+
+
 }
 
 public struct MazeInfo

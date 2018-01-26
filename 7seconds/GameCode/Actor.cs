@@ -70,10 +70,12 @@ namespace _7seconds
 
             m_position = Vector2.Lerp(m_position, m_targetPos.ToVector2(), 0.3f);
 
-            if (m_timer.X < 0)
+            if (m_timer.X < 0 && m_virtualpos != m_targetPos)
             {
                 Collision(level);
                 m_timer.X = m_timer.Y;
+                m_position.X = (int)Math.Round(m_position.X, 0);
+                m_position.Y = (int)Math.Round(m_position.Y, 0);
             }
             m_timer.X -= (float)gt.ElapsedGameTime.TotalSeconds;
             
@@ -126,7 +128,7 @@ namespace _7seconds
             if (input.m_buttons[1].m_isDown)
                 MoveHere.Y += -1;
 
-            if (touchinput.m_Touches.Count > 1)
+            if (touchinput.m_Touches.Count > 2)
                 m_timer.X -= (float)gt.ElapsedGameTime.TotalSeconds;
 
 

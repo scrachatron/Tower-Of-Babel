@@ -18,6 +18,8 @@ namespace _7seconds
         public static Random RNG;
         public static int TILESIZE = 64;
 
+        public static int FloorNumber = 0;
+
         SpriteBatch spriteBatch;
         List<Level> m_map;
         Camera m_cam;
@@ -59,7 +61,7 @@ namespace _7seconds
             m_p.Position = new Vector2(m_map[0].m_StartPos.X * TILESIZE, m_map[0].m_StartPos.Y * TILESIZE);
             m_p.VirtualPosition = m_map[0].m_StartPos;
             m_minimap.UpdateMap(m_map[0]);
-
+            
             base.Initialize();
         }
 
@@ -99,19 +101,32 @@ namespace _7seconds
         protected override void Update(GameTime gameTime)
         { 
             m_touch.UpdateMe();
-            if(new Rectangle(m_p.Position.ToPoint(),new Point (TILESIZE,TILESIZE)).Intersects(
-                new Rectangle(m_map[0].m_WinPos.X * TILESIZE,m_map[0].m_WinPos.Y * TILESIZE,TILESIZE,TILESIZE)))
+            if (new Rectangle(m_p.Position.ToPoint(), new Point(TILESIZE, TILESIZE)).Intersects(
+                new Rectangle(m_map[0].m_WinPos.X * TILESIZE, m_map[0].m_WinPos.Y * TILESIZE, TILESIZE, TILESIZE)))
             {
-            
-                //m_manager.
-                m_manager.Join();
-                m_map.RemoveAt(0);
-                m_manager = new Thread(new ThreadStart(ThreadMap));
-                m_manager.Start();
-                m_p.Position = new Vector2(m_map[0].m_StartPos.X * TILESIZE, m_map[0].m_StartPos.Y * TILESIZE);
-                m_p.VirtualPosition = m_map[0].m_StartPos;
-                m_minimap.UpdateMap(m_map[0]);
-                //m_map.Add(new Level());
+
+                FloorNumber++;
+
+                if (FloorNumber % 25 == 0)
+                {
+                    m_manager.Join();
+                    m_map.RemoveAt(0);
+                    m_manager = new Thread(new ThreadStart(ThreadMap));
+                    m_manager.Start();
+                    m_p.Position = new Vector2(m_map[0].m_StartPos.X * TILESIZE, m_map[0].m_StartPos.Y * TILESIZE);
+                    m_p.VirtualPosition = m_map[0].m_StartPos;
+                    m_minimap.UpdateMap(m_map[0]);
+                }
+                else
+                {
+                    m_manager.Join();
+                    m_map.RemoveAt(0);
+                    m_manager = new Thread(new ThreadStart(ThreadMap));
+                    m_manager.Start();
+                    m_p.Position = new Vector2(m_map[0].m_StartPos.X * TILESIZE, m_map[0].m_StartPos.Y * TILESIZE);
+                    m_p.VirtualPosition = m_map[0].m_StartPos;
+                    m_minimap.UpdateMap(m_map[0]);
+                }
             }
             m_minimap.UpdateMe(gameTime, m_p,m_map[0]);
 
@@ -131,15 +146,17 @@ namespace _7seconds
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, RasterizerState.CullNone, null, m_cam.Transform);
 
-            m_map[0].DrawMe(spriteBatch);
+            m_map[0].DrawMe(spriteBatch, m_minimap);
             spriteBatch.Draw(Pixelclass.Pixel, new Rectangle(m_p.Position.ToPoint(), new Point(TILESIZE, TILESIZE)), Color.CornflowerBlue);
+
+            m_minimap.DrawFogOfWar(spriteBatch, m_map[0]);
 
             spriteBatch.End();
 
             spriteBatch.Begin();
 
             m_ui.DrawMe(spriteBatch);
-            if (m_touch.m_Touches.Count > 2)
+            if (m_touch.m_Touches.Count > 1)
                 m_minimap.DrawMe(spriteBatch, m_map[0],m_p.VirtualPosition);
 
 
