@@ -22,7 +22,7 @@ namespace Tower_Of_Babel
         private Rectangle bounds;
         private int currentregion;
 
-        private Random RNG { get; set; }
+        protected Random RNG { get; set; }
 
         public MazeGenerator()
         {
@@ -135,12 +135,12 @@ namespace Tower_Of_Babel
                 Carve(room);
             }
         }
-        private void Carve(Point pos)
+        public void Carve(Point pos)
         {
             m_stage[pos.X, pos.Y] = 0;
             m_regions[pos.X, pos.Y] = currentregion;
         }
-        private void Carve(Rectangle rect)
+        public void Carve(Rectangle rect)
         {
             for (int x = 0; x < rect.Width; x++)
                 for (int y = 0; y < rect.Height; y++)
@@ -455,6 +455,29 @@ namespace Tower_Of_Babel
             return Direction.Null;
         }
     }
+
+    class TownGenerator : MazeGenerator
+    {
+
+
+        public TownGenerator(int seed)
+            :base (seed)
+        {
+            m_stage = new int[128, 96];
+            for (int x = 0; x < m_stage.GetLength(0); x++)
+                for (int y = 0; y < m_stage.GetLength(1); y++)
+                    m_stage[x, y] = 1;
+
+            m_regions = new int[128, 96];
+
+            base.Carve(new Rectangle(1, 1, m_stage.GetLength(0) - 2, m_stage.GetLength(1) - 2));
+            
+        }
+
+
+    }
+
+
 }
 
 public struct MazeInfo
@@ -503,17 +526,9 @@ public struct MazeInfo
 
         NoOfChests = chests;
     }
-    //public MazeInfo()
-    //{
-    //    Roomtries = 0;
-    //    ConnectorChance = 0;
-    //    RoomExtraSize = 0;
-    //    WindingPercent = 0;
-    //    Map = new int[0, 0];
-    //    Rooms = new List<Rectangle>();
-    //}
-
 }
+
+
 
 enum Direction
 {

@@ -93,10 +93,12 @@ namespace Tower_Of_Babel
 
             
 
-            if (m_timer.X < 0)
+            if (m_timer.X < 0 && m_virtualpos != m_targetPos)
             {
                 Collision(level);
                 m_timer.X = m_timer.Y;
+                m_position.X = (int)Math.Round(m_position.X, 0);
+                m_position.Y = (int)Math.Round(m_position.Y, 0);
             }
             m_timer.X -= (float)gt.ElapsedGameTime.TotalSeconds;
 
@@ -165,6 +167,7 @@ namespace Tower_Of_Babel
             if (MoveHere != Point.Zero)
                 Game1.PlayerTurn = false;
 
+
         }
 
         public override void DrawMe(SpriteBatch sb)
@@ -195,6 +198,7 @@ namespace Tower_Of_Babel
             base.VirtualPosition = spawnroom.ReturnRandom(1);
             base.Position = new Vector2(VirtualPosition.X * Game1.TILESIZE, VirtualPosition.Y * Game1.TILESIZE);
         }
+
 
 
         public override void UpdateMe(GameTime gt, Level level)

@@ -33,14 +33,23 @@ namespace Tower_Of_Babel
 
 
 
+        
+
         bool[,] m_visibleterrain;
+
         bool[,] Active_area;
         int mapsize = 16;
+
         //Level m_lvl;
         public minimap(int mapwidth)
         {
             mapsize = Game1.graphics.PreferredBackBufferWidth / 128;
         }
+        public bool IsVisible(Point m_point)
+        {
+            return (m_fogOfWar[m_point.X, m_point.Y]);
+        }
+
         public void UpdateMap(Level lvl)
         {
             m_visibleterrain = new bool[lvl.Map.GetLength(0), lvl.Map.GetLength(1)];
@@ -72,8 +81,10 @@ namespace Tower_Of_Babel
                         m_visibleterrain[p.VirtualPosition.X + x, p.VirtualPosition.Y + y] = true;
                         Active_area[p.VirtualPosition.X + x, p.VirtualPosition.Y + y] = true;
                     }
+
                 }
 
+            // fill fog of war for rooms
             for (int i = 0; i < lvl.m_mazeGen.m_rooms.Count; i++)
                 if (lvl.m_mazeGen.m_rooms[i].Contains(p.VirtualPosition))
                 {
@@ -82,6 +93,7 @@ namespace Tower_Of_Babel
                         {
                             m_visibleterrain[x, y] = true;
                             Active_area[x, y] = true;
+
                         }
                 }
                 
@@ -107,6 +119,20 @@ namespace Tower_Of_Babel
 #endif
         }
 
+        public void DrawFogOfWar(SpriteBatch sb, Level lvl)
+        {
+            //sb.Draw(Pixel, new Rectangle(0, 0, Game1.graphics.PreferredBackBufferWidth, Game1.graphics.PreferredBackBufferHeight), Color.Black * 0.5f);
+
+            for (int x = 0; x < m_visibleterrain.GetLength(0); x++)
+                for (int y = 0; y < m_visibleterrain.GetLength(1); y++)
+                    if (m_fogOfWar[x, y] == false)
+                    {
+                        if (lvl.Map[x, y] == 0)
+                            sb.Draw(Pixel, new Rectangle(x * Game1.TILESIZE, y * Game1.TILESIZE, Game1.TILESIZE, Game1.TILESIZE), Color.Black * 0.75f);
+
+                    }
+
+        }
 
 
 
