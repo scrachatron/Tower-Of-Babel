@@ -17,6 +17,7 @@ namespace _7seconds
         public static GraphicsDeviceManager graphics;
         public static Random RNG;
         public static int TILESIZE = 64;
+        private int TownNumber = 10;
 
         public static int FloorNumber = 0;
 
@@ -52,13 +53,17 @@ namespace _7seconds
         {
             m_touch = new TouchInputManager();
             m_map = new List<Level>();
-            m_map.Add(new Level());
-            m_manager = new Thread(new ThreadStart(ThreadMap));
+            m_map.Add(new Town(Android.OS.Build.Serial.GetHashCode() + FloorNumber));
+
+
+            m_manager = new Thread(() => ThreadMap());
             m_manager.Start();
+
             m_cam = new Camera(GraphicsDevice.Viewport);
             m_minimap = new minimap();
             m_ui = new Ui(new Vector2(graphics.PreferredBackBufferWidth / 6, graphics.PreferredBackBufferHeight - graphics.PreferredBackBufferHeight / 5),(graphics.PreferredBackBufferWidth/20));
             m_p.Position = new Vector2(m_map[0].m_StartPos.X * TILESIZE, m_map[0].m_StartPos.Y * TILESIZE);
+            
             m_p.VirtualPosition = m_map[0].m_StartPos;
             m_minimap.UpdateMap(m_map[0]);
             
@@ -68,6 +73,10 @@ namespace _7seconds
         private void ThreadMap()
         {
             m_map.Add(new Level());
+        }
+        private void ThreadMap(int seed)
+        {
+            m_map.Add(new Town(seed.ToString().GetHashCode()));
         }
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
@@ -107,12 +116,13 @@ namespace _7seconds
 
                 FloorNumber++;
 
-                if (FloorNumber % 25 == 0)
+                if ((FloorNumber - 1) % TownNumber == 0)
                 {
                     m_manager.Join();
                     m_map.RemoveAt(0);
-                    m_manager = new Thread(new ThreadStart(ThreadMap));
+                    m_manager = new Thread(() => ThreadMap(Android.OS.Build.Serial.GetHashCode() + FloorNumber));
                     m_manager.Start();
+
                     m_p.Position = new Vector2(m_map[0].m_StartPos.X * TILESIZE, m_map[0].m_StartPos.Y * TILESIZE);
                     m_p.VirtualPosition = m_map[0].m_StartPos;
                     m_minimap.UpdateMap(m_map[0]);
@@ -128,8 +138,10 @@ namespace _7seconds
                     m_minimap.UpdateMap(m_map[0]);
                 }
             }
-            m_minimap.UpdateMe(gameTime, m_p,m_map[0]);
-
+            if (FloorNumber % TownNumber != 0)
+            {
+                m_minimap.UpdateMe(gameTime, m_p, m_map[0]);
+            }
             m_ui.UpdateMe(m_touch);
             m_p.UpdateMe(gameTime,m_map[0], m_ui,m_touch);
 
@@ -149,8 +161,10 @@ namespace _7seconds
             m_map[0].DrawMe(spriteBatch, m_minimap);
             spriteBatch.Draw(Pixelclass.Pixel, new Rectangle(m_p.Position.ToPoint(), new Point(TILESIZE, TILESIZE)), Color.CornflowerBlue);
 
-            m_minimap.DrawFogOfWar(spriteBatch, m_map[0]);
-
+            if (FloorNumber % TownNumber != 0)
+            {
+                m_minimap.DrawFogOfWar(spriteBatch, m_map[0]);
+            }
             spriteBatch.End();
 
             spriteBatch.Begin();
@@ -165,6 +179,9 @@ namespace _7seconds
             
 #if DEBUG
             spriteBatch.DrawString(Pixelclass.Font, m_p.Position.ToString(), new Vector2(0, 0), Color.CornflowerBlue);
+            spriteBatch.DrawString(Pixelclass.Font, FloorNumber.ToString(), new Vector2(0, Pixelclass.Font.MeasureString(FloorNumber.ToString()).Y), Color.CornflowerBlue);
+
+
 
             for (int i = 0; i < m_touch.m_Touches.Count; i++)
             {

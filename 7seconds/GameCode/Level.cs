@@ -85,7 +85,7 @@ namespace _7seconds
 
         public void RegenTown()
         {
-            
+            Map = m_mazeGen.MapInformation.Map;
         }
         
         public void DrawMe(SpriteBatch sb,minimap MiniMap)

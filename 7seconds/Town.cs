@@ -10,6 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using _7seconds;
+using Microsoft.Xna.Framework;
 
 namespace Tower_Of_Babel
 {
@@ -22,8 +23,10 @@ namespace Tower_Of_Babel
             :base()
         {
             base.m_mazeGen = new TownGenerator(townLvl);
-
-            
+            Map = m_mazeGen.m_stage;
+            m_mazeGen.MapInformation.Map = Map;
+            base.m_WinPos = new Point(5, 5);
+            base.m_StartPos = new Point(3, 5);
 
 
 
