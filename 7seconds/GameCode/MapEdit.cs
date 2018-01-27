@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using System.Xml.Serialization;
 using System.IO;
 
-namespace _7seconds
+namespace Tower_Of_Babel
 {
     [Serializable]
     public struct LevelData
@@ -192,7 +192,7 @@ namespace _7seconds
         }
         public void DrawMe(SpriteBatch sb)
         {
-            levelCreate.DrawMe(sb);
+            //levelCreate.DrawMe(sb);
         }
 
 

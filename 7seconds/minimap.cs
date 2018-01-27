@@ -9,7 +9,6 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using _7seconds;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
@@ -17,15 +16,34 @@ namespace Tower_Of_Babel
 {
     class minimap : Pixelclass
     {
+        public bool[,] Terrain
+        {
+            get
+            {
+                return m_visibleterrain;
+            }
+        }
+        public bool[,] ActiveArea
+        {
+            get
+            {
+                return Active_area;
+            }
+        }
+
+
 
         
 
         bool[,] m_visibleterrain;
-        bool[,] m_fogOfWar;
+
+        bool[,] Active_area;
+        int mapsize = 16;
+
         //Level m_lvl;
-        public minimap()
+        public minimap(int mapwidth)
         {
-           
+            mapsize = Game1.graphics.PreferredBackBufferWidth / 128;
         }
         public bool IsVisible(Point m_point)
         {
@@ -35,33 +53,35 @@ namespace Tower_Of_Babel
         public void UpdateMap(Level lvl)
         {
             m_visibleterrain = new bool[lvl.Map.GetLength(0), lvl.Map.GetLength(1)];
-            m_fogOfWar = new bool[lvl.Map.GetLength(0), lvl.Map.GetLength(1)];
-
+            Active_area = new bool[lvl.Map.GetLength(0), lvl.Map.GetLength(1)];
             for (int x = 0; x < m_visibleterrain.GetLength(0); x++)
                 for (int y = 0; y < m_visibleterrain.GetLength(1); y++)
                 {
-                    m_fogOfWar[x, y] = false;
                     m_visibleterrain[x, y] = false;
+                    Active_area[x, y] = false;
                 }
+
             //m_lvl = lvl;
 
 
         }
         public void UpdateMe(GameTime gt,Player p, Level lvl)
         {
-            // Reset Fog Of War
-            for (int x = 0; x < m_visibleterrain.GetLength(0); x++)
-                for (int y = 0; y < m_visibleterrain.GetLength(1); y++)
+            for (int x = 0; x < Active_area.GetLength(0); x++)
+                for (int y = 0; y < Active_area.GetLength(1); y++)
                 {
-                    m_fogOfWar[x, y] = false;
+                    Active_area[x, y] = false;
                 }
 
-            // Fill visible map and fog of war
-            for (int x = -1; x < 2; x++)
-                for (int y = -1; y < 2; y++)
+            for (int x = -2; x < 3; x++)
+                for (int y = -2; y < 3; y++)
                 {
-                    m_visibleterrain[p.VirtualPosition.X + x, p.VirtualPosition.Y + y] = true;
-                    m_fogOfWar[p.VirtualPosition.X + x, p.VirtualPosition.Y + y] = true;
+                    if (new Rectangle(0, 0, Active_area.GetLength(0), Active_area.GetLength(1)).Contains(new Point(p.VirtualPosition.X + x, p.VirtualPosition.Y + y)))
+                    {
+                        m_visibleterrain[p.VirtualPosition.X + x, p.VirtualPosition.Y + y] = true;
+                        Active_area[p.VirtualPosition.X + x, p.VirtualPosition.Y + y] = true;
+                    }
+
                 }
 
             // fill fog of war for rooms
@@ -72,7 +92,8 @@ namespace Tower_Of_Babel
                         for (int y= lvl.m_mazeGen.m_rooms[i].Y - 1; y < lvl.m_mazeGen.m_rooms[i].Bottom +1; y++)
                         {
                             m_visibleterrain[x, y] = true;
-                            m_fogOfWar[x, y] = true;
+                            Active_area[x, y] = true;
+
                         }
                 }
                 
@@ -87,14 +108,14 @@ namespace Tower_Of_Babel
                     if (m_visibleterrain[x,y] == true)
                     {
                         if (lvl.Map[x,y] == 0)
-                            sb.Draw(Pixel, new Rectangle(x * 16, y * 16, 16, 16), Color.White * 0.75f);
+                            sb.Draw(Pixel, new Rectangle(x * mapsize, y * mapsize, mapsize, mapsize), Color.White * 0.75f);
 
                     }
 
 #if DEBUG
-            sb.Draw(Pixel, new Rectangle(p.X * 16, p.Y * 16, 16, 16), Color.Blue * 0.75f);
-            sb.Draw(Pixel, new Rectangle(lvl.m_StartPos.X * 16, lvl.m_StartPos.Y * 16, 16, 16), Color.Red * 0.75f);
-            sb.Draw(Pixel, new Rectangle(lvl.m_WinPos.X * 16, lvl.m_WinPos.Y * 16, 16, 16), Color.Green * 0.75f);
+            sb.Draw(Pixel, new Rectangle(p.X * mapsize, p.Y * mapsize, mapsize, mapsize), Color.Blue * 0.75f);
+            sb.Draw(Pixel, new Rectangle(lvl.m_StartPos.X * mapsize, lvl.m_StartPos.Y * mapsize, mapsize, mapsize), Color.Red * 0.75f);
+            sb.Draw(Pixel, new Rectangle(lvl.m_WinPos.X * mapsize, lvl.m_WinPos.Y * mapsize, mapsize, mapsize), Color.Green * 0.75f);
 #endif
         }
 

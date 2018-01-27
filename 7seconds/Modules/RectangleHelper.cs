@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace _7seconds
+namespace Tower_Of_Babel
 {
     static class RectangleHelper
     {

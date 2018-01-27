@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace _7seconds
+namespace Tower_Of_Babel
 {
     class Actor : Pixelclass
     {
@@ -65,10 +65,33 @@ namespace _7seconds
         {
             m_rect.Width = level.LayerSize.X;
             m_rect.Height = level.LayerSize.Y;
+
+            if (m_rect.X != m_virtualpos.X * level.LayerSize.X || m_rect.Y != m_virtualpos.Y * level.LayerSize.Y)
+                m_position = Vector2.Lerp(m_position, m_targetPos.ToVector2(), 0.3f);
+            if (m_rect.X == m_virtualpos.X * level.LayerSize.X)
+            {
+                m_position.X = m_virtualpos.X * level.LayerSize.X;
+            }
+            if (m_rect.Y == m_virtualpos.Y * level.LayerSize.Y)
+            {
+                m_position.Y = m_virtualpos.Y * level.LayerSize.Y;
+            }
+
+
+            #region Depreated movment code
+            //if (new Point(m_rect.X,m_rect.Y) != new Point(m_virtualpos.X * level.LayerSize.X,m_virtualpos.Y * level.LayerSize.Y))
+            //    m_position = Vector2.Lerp(m_position, m_targetPos.ToVector2(), 0.3f);
+            //else
+            //{
+            //    m_position = new Vector2(m_virtualpos.X * level.LayerSize.X, m_virtualpos.Y * level.LayerSize.Y);
+            //}
+            #endregion
+
             m_rect.X = (int)Math.Round(m_position.X);
             m_rect.Y = (int)Math.Round(m_position.Y);
 
-            m_position = Vector2.Lerp(m_position, m_targetPos.ToVector2(), 0.3f);
+
+            
 
             if (m_timer.X < 0 && m_virtualpos != m_targetPos)
             {
@@ -78,7 +101,11 @@ namespace _7seconds
                 m_position.Y = (int)Math.Round(m_position.Y, 0);
             }
             m_timer.X -= (float)gt.ElapsedGameTime.TotalSeconds;
-            
+
+            MoveHere.X = 0;
+            MoveHere.Y = 0;
+
+
         }
         public virtual void DrawMe(SpriteBatch sb)
         {
@@ -119,6 +146,16 @@ namespace _7seconds
         }
         public void UpdateMe(GameTime gt, Level level, Ui input, TouchInputManager touchinput)
         {
+
+            if (touchinput.m_Touches.Count > 1)
+                m_timer.X -= (float)gt.ElapsedGameTime.TotalSeconds;
+
+
+           base.UpdateMe(gt, level);
+        }
+
+        public void TakeTurn(Ui input)
+        {
             if (input.m_buttons[2].m_isDown)
                 MoveHere.X += 1;
             if (input.m_buttons[3].m_isDown)
@@ -127,20 +164,68 @@ namespace _7seconds
                 MoveHere.Y += 1;
             if (input.m_buttons[1].m_isDown)
                 MoveHere.Y += -1;
+            if (MoveHere != Point.Zero)
+                Game1.PlayerTurn = false;
 
-            if (touchinput.m_Touches.Count > 2)
-                m_timer.X -= (float)gt.ElapsedGameTime.TotalSeconds;
 
-
-            base.UpdateMe(gt, level);
-
-            MoveHere.X = 0;
-            MoveHere.Y = 0;
         }
+
         public override void DrawMe(SpriteBatch sb)
         {
             base.DrawMe(sb);
+#if DEBUG
             sb.DrawString(Font, VirtualPosition.X + "," + VirtualPosition.Y, Position, Color.White);
+#endif
         }
+    }
+
+    class Enemy : Actor
+    {
+
+
+
+        public Enemy(Level level,Player p) 
+            : base(new Rectangle(0, 0, Game1.TILESIZE, Game1.TILESIZE), Color.Red, 0)
+        {
+
+            Rectangle spawnroom;
+            do
+            {
+                spawnroom = level.m_mazeGen.m_rooms[Game1.RNG.Next(0, level.m_mazeGen.m_rooms.Count())];
+            } while (spawnroom.Contains(p.VirtualPosition));
+
+
+            base.VirtualPosition = spawnroom.ReturnRandom(1);
+            base.Position = new Vector2(VirtualPosition.X * Game1.TILESIZE, VirtualPosition.Y * Game1.TILESIZE);
+        }
+
+
+
+        public override void UpdateMe(GameTime gt, Level level)
+        {
+            base.UpdateMe(gt, level);
+        }
+
+
+        public void TakeTurn()
+        {
+            int action = Game1.RNG.Next(0, 4);
+
+            if (action == 0)
+                MoveHere.X += 1;
+            else if (action == 1)
+                MoveHere.X += -1;
+            else if (action == 2)
+                MoveHere.Y += 1;
+            else if (action == 3)
+                MoveHere.Y += -1;
+        }
+
+        public override void DrawMe(SpriteBatch sb)
+        {
+            base.DrawMe(sb);
+        }
+
+
     }
 }

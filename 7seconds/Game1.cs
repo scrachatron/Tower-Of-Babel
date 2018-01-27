@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Tower_Of_Babel;
 
-namespace _7seconds
+namespace Tower_Of_Babel
 {
     /// <summary>
     /// This is the main type for your game.
@@ -17,10 +17,13 @@ namespace _7seconds
         public static GraphicsDeviceManager graphics;
         public static Random RNG;
         public static int TILESIZE = 64;
-        private int TownNumber = 10;
 
+        public static bool PlayerTurn = true;
+
+        private int TownNumber = 10;
         public static int FloorNumber = 0;
 
+        
         SpriteBatch spriteBatch;
         List<Level> m_map;
         Camera m_cam;
@@ -60,7 +63,7 @@ namespace _7seconds
             m_manager.Start();
 
             m_cam = new Camera(GraphicsDevice.Viewport);
-            m_minimap = new minimap();
+            m_minimap = new minimap(m_map[0].Map.GetLength(0));
             m_ui = new Ui(new Vector2(graphics.PreferredBackBufferWidth / 6, graphics.PreferredBackBufferHeight - graphics.PreferredBackBufferHeight / 5),(graphics.PreferredBackBufferWidth/20));
             m_p.Position = new Vector2(m_map[0].m_StartPos.X * TILESIZE, m_map[0].m_StartPos.Y * TILESIZE);
             
@@ -72,7 +75,10 @@ namespace _7seconds
 
         private void ThreadMap()
         {
-            m_map.Add(new Level());
+            if (FloorNumber % 25 == 0)
+                m_map.Add(new Town());
+            else
+                m_map.Add(new Level());
         }
         private void ThreadMap(int seed)
         {
@@ -143,9 +149,16 @@ namespace _7seconds
                 m_minimap.UpdateMe(gameTime, m_p, m_map[0]);
             }
             m_ui.UpdateMe(m_touch);
+            if (PlayerTurn)
+            {
+                m_p.TakeTurn(m_ui);
+               
+            }
             m_p.UpdateMe(gameTime,m_map[0], m_ui,m_touch);
 
-                m_cam.UpdateMe(m_p.Position, new Point(TILESIZE * m_map[0].Map.GetLength(0), TILESIZE * m_map[0].Map.GetLength(1)));
+            m_map[0].UpdateMe(gameTime, m_p, m_touch);
+
+            m_cam.UpdateMe(m_p.Position, new Point(TILESIZE * m_map[0].Map.GetLength(0), TILESIZE * m_map[0].Map.GetLength(1)));
                 //m_cam.UpdateMe(m_touch.m_Touches[0].Position, new Point(0, 0));
 
 
@@ -154,11 +167,13 @@ namespace _7seconds
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.AliceBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, RasterizerState.CullNone, null, m_cam.Transform);
 
-            m_map[0].DrawMe(spriteBatch, m_minimap);
+
+            m_map[0].DrawMe(spriteBatch,m_minimap,m_p.VirtualPosition);
+
             spriteBatch.Draw(Pixelclass.Pixel, new Rectangle(m_p.Position.ToPoint(), new Point(TILESIZE, TILESIZE)), Color.CornflowerBlue);
 
             if (FloorNumber % TownNumber != 0)

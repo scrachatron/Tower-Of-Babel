@@ -3,7 +3,7 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 
-namespace _7seconds
+namespace Tower_Of_Babel
 {
     [Activity(Label = "Tower Of Babel"
         , MainLauncher = true
