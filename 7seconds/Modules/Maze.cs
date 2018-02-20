@@ -463,13 +463,13 @@ namespace Tower_Of_Babel
         public TownGenerator(int seed)
             :base (seed)
         {
-            m_stage = new int[128, 96];
+            m_stage = new int[129, 97];
             for (int x = 0; x < m_stage.GetLength(0); x++)
                 for (int y = 0; y < m_stage.GetLength(1); y++)
                     m_stage[x, y] = 1;
 
-            m_regions = new int[128, 96];
-
+            m_regions = new int[129, 97];
+            
             base.Carve(new Rectangle(1, 1, m_stage.GetLength(0) - 2, m_stage.GetLength(1) - 2));
             
         }

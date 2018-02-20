@@ -58,7 +58,7 @@ namespace Tower_Of_Babel
 
         public virtual void UpdateMe(GameTime gt, Player p, TouchInputManager input)
         {
-            if(input.m_Touches.Count == 2)
+            if(input.m_Touches.Count == 5)
             {
                 m_enemys.Add(new Enemy(this, p));
             }
@@ -118,6 +118,8 @@ namespace Tower_Of_Babel
         public void RegenTown()
         {
             Map = m_mazeGen.MapInformation.Map;
+
+            m_LayerSize = new Point(Game1.TILESIZE, Game1.TILESIZE);
         }
         
         public void DrawMe(SpriteBatch sb,minimap MiniMap)
@@ -202,25 +204,4 @@ namespace Tower_Of_Babel
         }
     }
 
-    class Town : Level
-    {
-        public static readonly int TOWNSPECIFICSEED = 1234567890;
-
-
-        public Town()
-        {
-
-        }
-
-        public override void UpdateMe(GameTime gt, Player p, TouchInputManager input)
-        {
-            base.UpdateMe(gt, p, input);
-        }
-        public override void DrawMe(SpriteBatch sb, minimap minimap, Point playerpos)
-        {
-
-
-            base.DrawMe(sb, minimap, playerpos);
-        }
-    }
 }

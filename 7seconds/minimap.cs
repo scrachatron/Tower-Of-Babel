@@ -47,8 +47,15 @@ namespace Tower_Of_Babel
         }
         public bool IsVisible(Point m_point)
         {
-            return (m_fogOfWar[m_point.X, m_point.Y]);
+            return (m_visibleterrain[m_point.X, m_point.Y]);
         }
+        public void ShowAll()
+        {
+            for (int x = 0; x < m_visibleterrain.GetLength(0); x++)
+                for (int y = 0; y < m_visibleterrain.GetLength(1); y++)
+                    m_visibleterrain[x, y] = true;
+        }
+
 
         public void UpdateMap(Level lvl)
         {
@@ -125,7 +132,7 @@ namespace Tower_Of_Babel
 
             for (int x = 0; x < m_visibleterrain.GetLength(0); x++)
                 for (int y = 0; y < m_visibleterrain.GetLength(1); y++)
-                    if (m_fogOfWar[x, y] == false)
+                    if (m_visibleterrain[x, y] == false)
                     {
                         if (lvl.Map[x, y] == 0)
                             sb.Draw(Pixel, new Rectangle(x * Game1.TILESIZE, y * Game1.TILESIZE, Game1.TILESIZE, Game1.TILESIZE), Color.Black * 0.75f);
