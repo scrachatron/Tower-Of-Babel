@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Graphics;
 using System.Threading;
 using Tower_Of_Babel;
+using Tower_Of_Babel.GameCode.Graphics;
 
 namespace Tower_Of_Babel
 {
@@ -26,6 +27,8 @@ namespace Tower_Of_Babel
         {
             get { return m_enemys; }
         }
+        public Tile[,] VisualMap;
+
 
 
         public Point m_StartPos;
@@ -113,6 +116,68 @@ namespace Tower_Of_Babel
 
             }
 
+            VisualMap = new Tile[Map.GetLength(0), Map.GetLength(1)];
+
+            for (int x = 0; x < Map.GetLength(0); x++)
+                for (int y = 0; y < Map.GetLength(1); y++)
+                {
+                    int[,] m_base = new int[3, 3];
+
+                    for (int xt = 0; xt < 3; xt++)
+                        for (int yt = 0; yt < 3; yt++)
+                            m_base[xt, yt] = 1;
+
+                    for (int currx = -1; currx < 2; currx++)
+                        for (int curry = -1; curry < 2; curry++)
+                        {
+                            if (x + currx < 0)
+                                currx++;
+                            if (y + curry < 0)
+                                curry++;
+                            if (x + currx > Map.GetLength(0) -1)
+                                break;
+                            if (y + curry > Map.GetLength(1) -1)
+                                break;
+
+                            Point copycord = new Point(x + currx, y + curry);
+
+                            m_base[currx + 1,curry + 1] = Map[copycord.X,copycord.Y];
+
+                        }
+
+
+                    if (Map[x, y] == 0)
+                        VisualMap[x, y] = new Tile(TileType.Floor);
+                    else if (Map[x, y] == 1 && m_base[2,1] == 0)
+                    {
+                        VisualMap[x, y] = new Tile(TileType.LWall);
+                    }
+                    else if (Map[x, y] == 1 && m_base[0, 1] == 0)
+                    {
+                        VisualMap[x, y] = new Tile(TileType.RWall);
+                    }
+                    else if (Map[x, y] == 1 && m_base[1, 0] == 0)
+                    {
+                        VisualMap[x, y] = new Tile(TileType.TWall);
+                    }
+                    else if (Map[x, y] == 1 && m_base[1, 2] == 0)
+                    {
+                        VisualMap[x, y] = new Tile(TileType.BWall);
+                    }
+                    else
+                    {
+                        VisualMap[x, y] = new Tile(TileType.EmptyRegion);
+                    }
+
+                            
+
+
+
+
+
+                }
+
+
         }
 
         public void RegenTown()
@@ -135,6 +200,8 @@ namespace Tower_Of_Babel
                     //    sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Green);
                     //else if (Map[x, y] == 3 && MiniMap.IsVisible(new Point(x, y)))
                     //    sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Red);
+                    VisualMap[x, y].Draw(sb, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y));
+
                 }
             }
 
@@ -173,7 +240,13 @@ namespace Tower_Of_Babel
                             sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Green);
                         else if (Map[x, y] == 3)
                             sb.Draw(Pixel, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y), Color.Red);
+
+                        VisualMap[x, y].Draw(sb, new Rectangle(x * m_LayerSize.X, y * m_LayerSize.Y, m_LayerSize.X, m_LayerSize.Y));
+
                     }
+
+
+
 
                 }
             }

@@ -69,6 +69,7 @@
     <Compile Include="Activity1.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameCode\Actor.cs" />
+    <Compile Include="GameCode\Graphics\Tile.cs" />
     <Compile Include="GameCode\Level.cs" />
     <Compile Include="GameCode\MapEdit.cs" />
     <Compile Include="minimap.cs" />

@@ -20,7 +20,7 @@ namespace Tower_Of_Babel
 
         public static bool PlayerTurn = true;
 
-        private int TownNumber = 2;
+        private int TownNumber = 5;
         public static int CurrentFloor = 0;
         public static int GeneratingFloor = 1;
 
@@ -55,6 +55,9 @@ namespace Tower_Of_Babel
         /// </summary>
         protected override void Initialize()
         {
+            GameCode.Graphics.Tile.m_base = Content.Load<Texture2D>("sheet");
+            GameCode.Graphics.Tile.SpriteCount = new Point(19, 13);
+
             m_touch = new TouchInputManager();
             m_map = new List<Level>();
             m_map.Add(new Town(Android.OS.Build.Serial.GetHashCode() + CurrentFloor));
@@ -94,6 +97,7 @@ namespace Tower_Of_Babel
             Pixelclass.Font = Content.Load<SpriteFont>("File");
             Pixelclass.Pixel = Content.Load<Texture2D>("Pixel");
             Pixelclass.Tfont = Content.Load<SpriteFont>("File");
+
                                           
             // TODO: use this.Content to load your game content here
         }
